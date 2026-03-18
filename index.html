@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лезги ЧIал — Учи лезгинский</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">Лезги <span>ЧIал</span></div>
+    <nav>
+      <button class="active" onclick="showScreen('home')">🏠 Главная</button>
+      <button onclick="showScreen('cards')">📚 Карточки</button>
+      <button onclick="showScreen('alphabet')">🔤 Алфавит</button>
+      <button onclick="showScreen('grammar')">📖 Грамматика</button>
+      <button onclick="showScreen('words')">📝 Словарь</button>
+      <button onclick="showScreen('stats')">📊 Статистика</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <div id="screen-home" class="screen active animate-in">
+    <div class="home-greeting">
+      <h1>Салам! 👋</h1>
+      <p class="lezgi-script">Лезги чlал чирун — хъсан кар я</p>
+      <p style="margin-top:6px;color:var(--text2);font-size:14px;">Изучи лезгинский язык с нуля — один день за раз</p>
+    </div>
+    <div class="home-stats" id="home-stats-display"></div>
+    <p class="section-title">Режимы обучения</p>
+    <div class="home-modules">
+      <div class="module-card red" onclick="startMode('flashcard')">
+        <div class="module-icon">🃏</div>
+        <div class="module-title">Карточки (SRS)</div>
+        <div class="module-desc">Интервальные повторения</div>
+        <div class="module-badge" id="due-badge">0</div>
+      </div>
+      <div class="module-card gold" onclick="startMode('multiple')">
+        <div class="module-icon">🎯</div>
+        <div class="module-title">Выбор ответа</div>
+        <div class="module-desc">4 варианта на выбор</div>
+      </div>
+      <div class="module-card green" onclick="startMode('typing')">
+        <div class="module-icon">⌨️</div>
+        <div class="module-title">Ввод перевода</div>
+        <div class="module-desc">Напиши правильный ответ</div>
+      </div>
+      <div class="module-card dark" onclick="showScreen('alphabet')">
+        <div class="module-icon">🔤</div>
+        <div class="module-title">Алфавит</div>
+        <div class="module-desc">44 буквы лезгинского</div>
+      </div>
+    </div>
+    <p class="section-title">Категории слов</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;" id="home-cats"></div>
+    <p class="section-title">Сложные слова</p>
+    <div id="hard-words-home" class="wordlist-grid"></div>
+  </div>
+
+  <!-- CARDS -->
+  <div id="screen-cards" class="screen">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <h2 style="flex:1;">Карточки</h2>
+      <button class="btn btn-ghost" onclick="showScreen('home')" style="font-size:12px;padding:7px 12px;">← Назад</button>
+    </div>
+    <div class="mode-tabs" id="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('flashcard')">🃏 Карточки</button>
+      <button class="mode-tab" onclick="switchMode('multiple')">🎯 Выбор</button>
+      <button class="mode-tab" onclick="switchMode('typing')">⌨️ Ввод</button>
+    </div>
+    <div class="category-select" id="cat-select"></div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progress-bar" style="width:0%"></div>
+    </div>
+    <div class="card-counter" id="card-counter">0 / 0</div>
+
+    <div id="mode-flashcard">
+      <div class="flashcard-container">
+        <div class="flashcard" id="the-flashcard" onclick="flipCard()">
+          <div class="card-face card-front" id="fc-front">
+            <div class="fc-category-tag" id="fc-cat-tag">загрузка...</div>
+            <div class="fc-word" id="fc-word">—</div>
+            <div class="fc-ipa" id="fc-ipa"></div>
+            <div class="fc-hint">нажми, чтобы увидеть перевод</div>
+          </div>
+          <div class="card-face card-back" id="fc-back">
+            <div class="fc-word-small" id="fc-word-back"></div>
+            <div class="fc-translation" id="fc-translation">—</div>
+            <div class="fc-example" id="fc-example"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flip-hint" id="flip-hint">👆 Нажми на карточку, чтобы перевернуть</div>
+      <div class="srs-buttons" id="srs-buttons" style="display:none;">
+        <button class="srs-btn srs-again" onclick="srsAnswer(0)">✗ Снова<span>&lt; 1 мин</span></button>
+        <button class="srs-btn srs-hard" onclick="srsAnswer(1)">~ Трудно<span>1 день</span></button>
+        <button class="srs-btn srs-good" onclick="srsAnswer(2)">✓ Хорошо<span>3 дня</span></button>
+        <button class="srs-btn srs-easy" onclick="srsAnswer(3)">★ Легко<span>7 дней</span></button>
+      </div>
+    </div>
+
+    <div id="mode-multiple" style="display:none;">
+      <div class="mc-question">
+        <div class="mc-word" id="mc-word">—</div>
+        <div class="mc-ipa" id="mc-ipa"></div>
+        <p style="font-size:13px;color:var(--text3);margin-top:8px;">Выбери правильный перевод</p>
+      </div>
+      <div class="mc-options" id="mc-options"></div>
+      <div class="feedback-msg" id="mc-feedback"></div>
+    </div>
+
+    <div id="mode-typing" style="display:none;">
+      <div class="mc-question">
+        <div class="mc-word" id="ty-word">—</div>
+        <div class="mc-ipa" id="ty-ipa"></div>
+        <p style="font-size:13px;color:var(--text3);margin-top:8px;">Напиши перевод на русском</p>
+      </div>
+      <div class="typing-input-wrap">
+        <input class="typing-input" id="ty-input" type="text" placeholder="введи перевод..." autocomplete="off">
+        <button class="btn btn-primary" onclick="checkTyping()">Проверить</button>
+      </div>
+      <div class="feedback-msg" id="ty-feedback"></div>
+      <button class="btn btn-ghost" id="ty-next" style="display:none;width:100%;justify-content:center;" onclick="nextCard()">Следующее слово →</button>
+    </div>
+
+    <div class="completion" id="completion">
+      <div class="completion-emoji">🎉</div>
+      <h2>Сессия завершена!</h2>
+      <p id="completion-text">Отлично поработал сегодня</p>
+      <button class="btn btn-primary" onclick="restartSession()" style="margin-right:8px;">Ещё раз</button>
+      <button class="btn btn-ghost" onclick="showScreen('home')">На главную</button>
+    </div>
+  </div>
+
+  <!-- ALPHABET -->
+  <div id="screen-alphabet" class="screen">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:6px;">
+      <h2 style="flex:1;">Лезгинский алфавит</h2>
+      <button class="btn btn-ghost" onclick="showScreen('home')" style="font-size:12px;padding:7px 12px;">← Назад</button>
+    </div>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:20px;">44 буквы · Кириллическая основа · Специальные знаки</p>
+    <div class="letter-detail" id="letter-detail">
+      <div style="overflow:hidden;">
+        <div class="letter-detail-main" id="ld-letter">А</div>
+        <div class="letter-detail-info">
+          <h3 id="ld-name">Буква А</h3>
+          <p id="ld-sound" style="color:var(--text2);font-size:14px;margin:0;"></p>
+          <div class="letter-detail-words" id="ld-words"></div>
+        </div>
+      </div>
+    </div>
+    <div class="alphabet-grid" id="alphabet-grid"></div>
+    <div class="card" style="margin-top:20px;">
+      <h3 style="margin-bottom:12px;">Особые буквы лезгинского</h3>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7;">
+        <strong>КI, ПI, ТI, ЦI, ЧI</strong> — смычные (абруптивы/эйективы)<br>
+        <strong>Гъ, Хъ, Хь, Гь, Кь, Къ</strong> — фарингальные и увулярные<br>
+        <strong>Уь</strong> — передний огублённый звук (как немецкое ü)
+      </p>
+    </div>
+  </div>
+
+  <!-- GRAMMAR -->
+  <div id="screen-grammar" class="screen">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:6px;">
+      <h2 style="flex:1;">Грамматика</h2>
+      <button class="btn btn-ghost" onclick="showScreen('home')" style="font-size:12px;padding:7px 12px;">← Назад</button>
+    </div>
+    <p style="color:var(--text2);font-size:14px;margin-bottom:20px;">Основные правила лезгинского языка</p>
+    <div class="grammar-topics" id="grammar-topics"></div>
+  </div>
+
+  <!-- WORDS / DICTIONARY -->
+  <div id="screen-words" class="screen">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+      <h2 style="flex:1;">Словарь</h2>
+      <button class="btn btn-ghost" onclick="showScreen('home')" style="font-size:12px;padding:7px 12px;">← Назад</button>
+    </div>
+    <div class="wordlist-search">
+      <input class="search-input" id="word-search" placeholder="🔍 Поиск слова на русском или лезгинском..." oninput="filterWords()">
+    </div>
+    <div class="dict-tabs" id="dict-tabs">
+      <button class="dict-tab active" onclick="switchDictTab('curated')">📚 Учебные слова</button>
+      <button class="dict-tab" onclick="switchDictTab('full')">📖 Полный словарь (33k)</button>
+    </div>
+    <div class="category-select" id="word-cats"></div>
+    <p class="section-title" id="word-count-label">Все слова</p>
+    <div class="wordlist-grid" id="wordlist-grid"></div>
+    <div id="dict-load-more" style="display:none;text-align:center;margin:16px 0;">
+      <button class="btn btn-ghost" onclick="loadMoreDictWords()">Загрузить ещё</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div id="screen-stats" class="screen">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <h2 style="flex:1;">Статистика</h2>
+      <button class="btn btn-ghost" onclick="showScreen('home')" style="font-size:12px;padding:7px 12px;">← Назад</button>
+    </div>
+    <div class="streak-display">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-num" id="streak-num">0</div>
+      <div class="streak-label">дней подряд</div>
+    </div>
+    <div class="stats-grid" id="stats-grid"></div>
+    <p class="section-title" style="margin-top:8px;">Прогресс по словам</p>
+    <div class="word-progress-list" id="word-progress-list"></div>
+    <div style="margin-top:20px;text-align:center;">
+      <button class="btn btn-ghost" onclick="if(confirm('Сбросить весь прогресс?')){resetProgress();}" style="color:var(--danger);border-color:var(--danger);">
+        🗑 Сбросить прогресс
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<!-- DATA (порядок важен: сначала данные, потом логика) -->
+<script src="data/words.js"></script>
+<script src="data/alphabet_grammar.js"></script>
+<script src="data/dictionary.js"></script>
+
+<!-- ЛОГИКА (независимые модули) -->
+<script src="js/state.js"></script>
+<script src="js/flashcard.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/wordlist.js"></script>
+<script src="js/alphabet.js"></script>
+<script src="js/grammar.js"></script>
+<script src="js/home.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
