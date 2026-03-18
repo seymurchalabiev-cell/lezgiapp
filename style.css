@@ -280,6 +280,12 @@ h3 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600
 .letter-detail-main { font-family: 'Cormorant Garamond', serif; font-size: 72px; color: var(--primary); font-weight: 700; line-height: 1; float: left; margin-right: 20px; }
 .letter-detail-words { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
 .letter-word-tag { background: var(--bg2); padding: 4px 10px; border-radius: 20px; font-size: 13px; color: var(--text2); font-weight: 600; }
+.audio-btn {
+  background: var(--primary); color: #fff; border: none; border-radius: 8px;
+  padding: 3px 10px; font-size: 14px; cursor: pointer; vertical-align: middle;
+  margin-left: 8px; transition: background 0.2s;
+}
+.audio-btn:hover { background: var(--primary-dark); }
 
 /* GRAMMAR */
 .grammar-topics { display: grid; gap: 12px; margin-bottom: 24px; }
